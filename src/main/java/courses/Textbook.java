@@ -19,6 +19,8 @@ public class Textbook {
 	@ManyToOne
 	private Course course;
 
+	private String title;
+
 	public long getId() {
 		return id;
 	}
@@ -29,7 +31,8 @@ public class Textbook {
 
 	private Textbook() {}
 	
-	public Textbook(Course course) {
+	public Textbook(String title, Course course) {
+		this.title = title;
 		this.course = course;
 		// if we were cascading
 		// course.addTextbook(this);
@@ -50,11 +53,6 @@ public class Textbook {
 			return false;
 		}
 
-		Textbook other = (Textbook) obj;
-		return id == other.id;
-	}
-
-	public void setCourse(Course course) {
-		this.course = course;
+		return id == ((Textbook) obj).id;
 	}
 }
