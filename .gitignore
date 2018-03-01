@@ -1,0 +1,8 @@
+# Eclipse stuff
+/bin/
+.project
+.classpath
+.settings/
+
+# Gradle
+.gradle/
