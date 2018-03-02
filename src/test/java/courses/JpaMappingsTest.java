@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Collection;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
@@ -112,5 +114,24 @@ public class JpaMappingsTest {
 	
 		topic = topicRepo.findOne(topicId);
 		assertThat(topic.getCourses(), containsInAnyOrder(ooLanguages, scriptingLanguages));
+	}
+	
+	@Test
+	public void shouldFindCoursesForTopic() {
+		Topic topic = topicRepo.save(new Topic("Ruby"));
+		long topicId = topic.getId();
+
+		Course ooLanguages = new Course("OO Languages", topic);
+		ooLanguages = courseRepo.save(ooLanguages);
+		
+		Course scriptingLanguages = new Course("Scripting Languages", topic);
+		scriptingLanguages = courseRepo.save(scriptingLanguages);
+		
+		entityManager.flush();
+		entityManager.clear();
+		
+		topic = topicRepo.findOne(topicId);
+		Collection<Course> coursesForTopic = courseRepo.findByTopicsContains(topic);
+		assertThat(coursesForTopic, containsInAnyOrder(ooLanguages, scriptingLanguages));
 	}
 }
