@@ -1,6 +1,7 @@
 package courses;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -29,7 +30,7 @@ public class JpaMappingsTest {
 
 	@Resource
 	private TopicRepository topicRepo;
-
+	
 	@Test
 	public void shouldSaveAndLoadCourse() {
 		Course course = new Course("its name");
@@ -55,10 +56,10 @@ public class JpaMappingsTest {
 		courseRepo.save(course);
 		long courseId = course.getId();
 
-		Textbook first = new Textbook(course);
+		Textbook first = new Textbook("foo", course);
 		textbookRepo.save(first);
 
-		Textbook second = new Textbook(course);
+		Textbook second = new Textbook("bar", course);
 		textbookRepo.save(second);
 
 		entityManager.flush(); // forces pending stuff to happen
@@ -78,6 +79,16 @@ public class JpaMappingsTest {
 
 		topic = topicRepo.findOne(topicId);
 		assertThat(topic.getName(), is("its name"));
+	}
+	
+	@Test
+	public void shouldGenerateTopicId() {
+		Topic topic = topicRepo.save(new Topic("its name"));
+		long topicId = topic.getId();
+
+		entityManager.flush(); // forces jpa to hit the db when we try to find it
+		
+		assertThat(topicId, is(greaterThan(0L)));
 	}
 	
 	@Test
