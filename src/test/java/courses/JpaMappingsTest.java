@@ -145,4 +145,23 @@ public class JpaMappingsTest {
 		Collection<Course> coursesForTopic = courseRepo.findByTopicsContains(topic);
 		assertThat(coursesForTopic, containsInAnyOrder(ooLanguages, scriptingLanguages));
 	}
+	
+	@Test
+	public void shouldFindCoursesForTopicId() {
+		Topic topic = topicRepo.save(new Topic("Ruby"));
+		long topicId = topic.getId();
+
+		Course ooLanguages = new Course("OO Languages", topic);
+		ooLanguages = courseRepo.save(ooLanguages);
+		
+		Course scriptingLanguages = new Course("Scripting Languages", topic);
+		scriptingLanguages = courseRepo.save(scriptingLanguages);
+		
+		entityManager.flush();
+		entityManager.clear();
+		
+		Collection<Course> coursesForTopic = courseRepo.findByTopicsId(topicId);
+		assertThat(coursesForTopic, containsInAnyOrder(ooLanguages, scriptingLanguages));
+	}
+
 }
